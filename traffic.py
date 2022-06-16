@@ -1,37 +1,26 @@
-import os
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.optimizers import Adam
+from keras.utils.np_utils import to_categorical
+from keras.layers import Dropout, Flatten
+from keras.layers.convolutional import Conv2D, MaxPooling2D
 import cv2
-import tensorflow as tf
-from PIL import Image
 from sklearn.model_selection import train_test_split
-from keras.utils import to_categorical
-from keras.models import Sequential, load_model
-from keras.layers import Conv2D, MaxPool2D, Dense, Flatten, Dropout
-os.chdir('/Users/diamondnicholas/Desktop/Train')
+import pickle
+import os
+import pandas as pd
+import random
+from keras.preprocessing.image import ImageDataGenerator
 
 
-data = []
-labels = []
-# We have 43 Classes
-classes = 43
-cur_path = os.getcwd()
-
-print(cur_path)
-
-# processing images
-for i in range(classes):
-    path = os.path.join(cur_path,'.',str(i))
-    images = os.listdir(path)
-    for a in images:
-        try:
-            image = Image.open(path + '\\'+ a)
-            image = image.resize((30,30))
-            image = np.array(image)
-            data.append(image)
-            labels.append(i)
-        except Exception as e:
-            print(e)
-
-print(len(data))
+# params
+path = "Train" # folder with all the class folders
+labelFile = 'labels.csv' # file with all names of classes
+batch_size_val=50  # how many to process together
+steps_per_epoch_val=2000
+epochs_val=10
+imageDimesions = (32,32,3)
+testRatio = 0.2    # if 1000 images split will 200 for testing
+validationRatio = 0.2 # if 1000 images 20% of remaining 800 will be 160 for validation
